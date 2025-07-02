@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta Airlines Roblox - Premium Meal Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Whitney:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --delta-blue: #003366;
+            --delta-light-blue: #005a9e;
+            --delta-white: #ffffff;
+            --delta-gray: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Whitney', sans-serif;
+        }
+        
+        body {
+            background-color: var(--delta-white);
+            color: var(--delta-blue);
+            overflow-x: hidden;
+        }
+        
+        /* Landing Page */
+        .landing-page {
+            height: 100vh;
+            background: linear-gradient(135deg, var(--delta-blue) 0%, var(--delta-light-blue) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .landing-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/JbIHF3x.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .landing-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .delta-logo {
+            width: 200px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--delta-white);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: var(--delta-white);
+            opacity: 0.9;
+        }
+        
+        .select-meal-btn {
+            background-color: var(--delta-white);
+            color: var(--delta-blue);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .select-meal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .select-meal-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .select-meal-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        /* Selection Page */
+        .selection-page {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        .selection-page.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--delta-blue);
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--delta-blue);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        .meal-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .meal-card {
+            background: var(--delta-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 51, 102, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: cardAppear 0.6s forwards;
+        }
+        
+        .meal-card:nth-child(1) { animation-delay: 0.2s; }
+        .meal-card:nth-child(2) { animation-delay: 0.4s; }
+        .meal-card:nth-child(3) { animation-delay: 0.6s; }
+        .meal-card:nth-child(4) { animation-delay: 0.8s; }
+        
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 51, 102, 0.15);
+        }
+        
+        .meal-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0, 51, 102, 0.1);
+        }
+        
+        .meal-details {
+            padding: 25px;
+        }
+        
+        .meal-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--delta-blue);
+        }
+        
+        .meal-description {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .select-btn {
+            background-color: var(--delta-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .select-btn:hover {
+            background-color: var(--delta-light-blue);
+        }
+        
+        /* Confirmation Page */
+        .confirmation-page {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .confirmation-page.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .confirmation-form {
+            background: var(--delta-white);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1);
+            border: 1px solid rgba(0, 51, 102, 0.1);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: formAppear 0.6s forwards 0.3s;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--delta-blue);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 51, 102, 0.3);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--delta-blue);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+        
+        .submit-btn {
+            background-color: var(--delta-blue);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--delta-light-blue);
+        }
+        
+        .selected-meal-display {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 51, 102, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--delta-blue);
+        }
+        
+        .selected-meal-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--delta-blue);
+        }
+        
+        /* Final Page */
+        .final-page {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .final-page.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: #28a745;
+            margin-bottom: 30px;
+            animation: bounce 1s ease;
+        }
+        
+        .success-message {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--delta-blue);
+        }
+        
+        .additional-info {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .contact-link {
+            color: var(--delta-blue);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px dotted var(--delta-blue);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link:hover {
+            color: var(--delta-light-blue);
+            border-bottom-color: var(--delta-light-blue);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        @keyframes cardAppear {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes formAppear {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .confirmation-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+        <img src="https://i.imgur.com/3JQZq9j.png" alt="Delta Airlines Logo" class="delta-logo">
+        <div class="landing-content">
+            <h1>Premium In-Flight Dining</h1>
+            <p class="subtitle">Experience gourmet meals at 30,000 feet with our premium dining options</p>
+            <button class="select-meal-btn" id="selectMealBtn">Select Your Meal</button>
+        </div>
+    </div>
+    
+    <!-- Selection Page -->
+    <div class="selection-page" id="selectionPage">
+        <h2 class="page-title">Choose Your Premium Meal</h2>
+        <div class="meal-options">
+            <div class="meal-card">
+                <img src="https://i.imgur.com/JK5eXWm.jpg" alt="Beef Short Rib" class="meal-image">
+                <div class="meal-details">
+                    <h3 class="meal-name">Beef Short Rib</h3>
+                    <p class="meal-description">
+                        Mashama Bailey's Beef Short Rib with spiced kanni sauce, garlic-thyme mashed potatoes, roasted carrots and scallions
+                    </p>
+                    <button class="select-btn" data-meal="Beef Short Rib">Select This Meal</button>
+                </div>
+            </div>
+            
+            <div class="meal-card">
+                <img src="https://i.imgur.com/8QZJ9Xq.jpg" alt="Chicken Greek Salad" class="meal-image">
+                <div class="meal-details">
+                    <h3 class="meal-name">Chicken Greek Salad</h3>
+                    <p class="meal-description">
+                        Chicken Greek Salad with romaine, feta cheese, cucumber, tomatoes, olives, pepperoncini and lemon-oregano dressing
+                    </p>
+                    <button class="select-btn" data-meal="Chicken Greek Salad">Select This Meal</button>
+                </div>
+            </div>
+            
+            <div class="meal-card">
+                <img src="https://i.imgur.com/3mQ7W9L.jpg" alt="Spinach Cannelloni" class="meal-image">
+                <div class="meal-details">
+                    <h3 class="meal-name">Spinach Cannelloni</h3>
+                    <p class="meal-description">
+                        Spinach Cannelloni with Bianco DiNapoli tomato sauce, mozzarella and parsley
+                    </p>
+                    <button class="select-btn" data-meal="Spinach Cannelloni">Select This Meal</button>
+                </div>
+            </div>
+            
+            <div class="meal-card">
+                <img src="https://i.imgur.com/v5XQZ9J.jpg" alt="No Meal" class="meal-image">
+                <div class="meal-details">
+                    <h3 class="meal-name">No Meal</h3>
+                    <p class="meal-description">
+                        I prefer not to have a meal during this flight
+                    </p>
+                    <button class="select-btn" data-meal="No Meal">Select This Option</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Page -->
+    <div class="confirmation-page" id="confirmationPage">
+        <h2 class="page-title">Confirm Your Meal Selection</h2>
+        <div class="confirmation-form">
+            <div class="selected-meal-display">
+                <p>You've selected:</p>
+                <h3 class="selected-meal-name" id="selectedMealName">Meal Name</h3>
+            </div>
+            
+            <form id="mealForm">
+                <div class="form-group">
+                    <label for="username">Roblox Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="flightNumber">Flight Number</label>
+                    <input type="text" id="flightNumber" name="flightNumber" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" name="destination" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Confirm Meal Selection</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Final Page -->
+    <div class="final-page" id="finalPage">
+        <div class="success-icon">✓</div>
+        <h2 class="success-message" id="successMessage">Your meal order has been placed!</h2>
+        <p class="additional-info">
+            Your meal order for <span id="finalMealName">[Meal]</span> has been confirmed.<br>
+            If you'd like to change your meal selection, you can do so up to 24 hours before your flight.<br>
+            <a href="#" class="contact-link">Click here</a> to contact our customer service team.
+        </p>
+    </div>
+    
+    <script>
+        // Page Navigation
+        document.getElementById('selectMealBtn').addEventListener('click', function() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('selectionPage').classList.add('active');
+        });
+        
+        // Meal Selection
+        const selectBtns = document.querySelectorAll('.select-btn');
+        selectBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const selectedMeal = this.getAttribute('data-meal');
+                document.getElementById('selectedMealName').textContent = selectedMeal;
+                document.getElementById('selectionPage').classList.remove('active');
+                document.getElementById('confirmationPage').classList.add('active');
+                
+                // Store selected meal for final page
+                sessionStorage.setItem('selectedMeal', selectedMeal);
+            });
+        });
+        
+        // Form Submission
+        document.getElementById('mealForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const username = document.getElementById('username').value;
+            const flightNumber = document.getElementById('flightNumber').value;
+            const destination = document.getElementById('destination').value;
+            const meal = document.getElementById('selectedMealName').textContent;
+            
+            // Send to Discord webhook (replace with your actual webhook URL)
+            const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
+            const message = {
+                content: `New Meal Order:\n**Username:** ${username}\n**Flight Number:** ${flightNumber}\n**Destination:** ${destination}\n**Meal:** ${meal}`
+            };
+            
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error sending to Discord');
+                }
+                
+                // Show final page
+                document.getElementById('confirmationPage').classList.remove('active');
+                document.getElementById('finalPage').classList.add('active');
+                document.getElementById('finalMealName').textContent = meal;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Still show final page even if Discord fails
+                document.getElementById('confirmationPage').classList.remove('active');
+                document.getElementById('finalPage').classList.add('active');
+                document.getElementById('finalMealName').textContent = meal;
+            });
+        });
+        
+        // Button ripple effect
+        const buttons = document.querySelectorAll('.select-meal-btn, .select-btn, .submit-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
